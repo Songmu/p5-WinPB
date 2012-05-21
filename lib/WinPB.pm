@@ -8,6 +8,7 @@ use Any::Moose;
 use Router::Simple;
 use Plack::Request;
 use namespace::autoclean;
+use Tkx;
 
 has router => (
     is => 'ro',
@@ -21,14 +22,18 @@ sub register {
     $self->connect( '/' => {
         action  => sub {
             my $req = shift;
-            'POST';
+            my $text = $req->param('pb');
+            return 'NG' unless defined $text;
+            Tkx::clipboard('clear');
+            Tkx::clipboard('append', $text);
+            'OK';
         },
     }, {method  => 'POST'});
 
     $self->connect( '/' => {
         action  => sub {
             my $req = shift;
-            'GET'
+            Tkx::clipboard('get');
         },
     }, {method  => 'GET'});
 
