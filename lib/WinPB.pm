@@ -55,7 +55,7 @@ sub process {
 
     my $req = Plack::Request->new($env);
     my $res = $req->new_response(200);
-    $res->content_type('text/plain: charset=utf8');
+    $res->content_type('text/plain; charset="UTF-8"');
     $res->body(
         $matched->{action}->($req)
     );
