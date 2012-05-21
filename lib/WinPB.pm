@@ -4,6 +4,7 @@ use warnings;
 use utf8;
 our $VERSION = '0.01';
 
+use Encode qw/encode_utf8/;
 use Any::Moose;
 use Router::Simple;
 use Plack::Request;
@@ -57,7 +58,7 @@ sub process {
     my $res = $req->new_response(200);
     $res->content_type('text/plain; charset="UTF-8"');
     $res->body(
-        $matched->{action}->($req)
+        encode_utf8 $matched->{action}->($req)
     );
     $res->finalize;
 }
