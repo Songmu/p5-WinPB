@@ -4,12 +4,12 @@ use warnings;
 use utf8;
 our $VERSION = '0.01';
 
-use Encode qw/encode_utf8/;
+use Encode qw/encode_utf8 decode_utf8 encode decode/;
 use Any::Moose;
+use namespace::autoclean;
 use Router::Simple;
 use Plack::Request;
-use namespace::autoclean;
-use Tkx;
+use Win32::Clipboard;
 
 has router => (
     is => 'ro',
@@ -18,6 +18,10 @@ has router => (
     handles => [qw/connect match/],
 );
 
+my $cp932   = Encode::find_encoding('cp932');
+my $utf8    = Encode::find_encoding('utf-8');
+my $utf16le = Encode::find_encoding('UTF16-LE');
+
 sub register {
     my $self = shift;
     $self->connect( '/' => {
@@ -25,8 +29,8 @@ sub register {
             my $req = shift;
             my $text = $req->param('pb');
             return 'NG' unless defined $text;
-            Tkx::clipboard('clear');
-            Tkx::clipboard('append', $text);
+            Encode::from_to($text, $utf8, $cp932);
+            Win32::Clipboard::Set($text);
             'OK';
         },
     }, {method  => 'POST'});
@@ -34,10 +38,10 @@ sub register {
     $self->connect( '/' => {
         action  => sub {
             my $req = shift;
-            Tkx::clipboard('get');
+            my $text = Win32::Clipboard::GetAs(CF_UNICODETEXT);
+            decode($utf16le, $text);
         },
     }, {method  => 'GET'});
-
 }
 
 sub to_app {
