@@ -4,19 +4,17 @@ use warnings;
 use utf8;
 our $VERSION = '0.01';
 
-use Encode qw/encode_utf8 decode_utf8 encode decode/;
-use Any::Moose;
-use namespace::autoclean;
+use Encode qw/encode_utf8 decode/;
 use Router::Simple;
 use Plack::Request;
 use Win32::Clipboard;
 
-has router => (
-    is => 'ro',
-    isa => 'Router::Simple',
-    default => sub { Router::Simple->new },
-    handles => [qw/connect match/],
-);
+sub new {
+    bless +{ _router => Router::Simple->new }, shift;
+}
+sub router  {shift->{_router}}
+sub connect {shift->router->connect(@_)}
+sub match   {shift->router->match(@_)}
 
 my $cp932   = Encode::find_encoding('cp932');
 my $utf8    = Encode::find_encoding('utf-8');
@@ -67,8 +65,7 @@ sub process {
     $res->finalize;
 }
 
-
-__PACKAGE__->meta->make_immutable;
+1;
 __END__
 
 =head1 NAME
