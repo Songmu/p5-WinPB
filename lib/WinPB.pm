@@ -44,6 +44,7 @@ sub register {
 
 sub to_app {
     my $self = shift;
+    $self->register;
     return sub {
         $self->process(@_);
     };
@@ -51,7 +52,6 @@ sub to_app {
 
 sub process {
     my ($self, $env) = @_;
-    $self->register;
     my $matched = $self->match($env);
 
     return [404, [], ['NOT FOUND']] unless $matched;
