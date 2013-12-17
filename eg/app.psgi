@@ -10,7 +10,7 @@ use WinPB;
 
 my $conf = do 'config.pl' || {};
 my $passwd = $conf->{password} || 'change_on_install';
-my $app = WinPB->new->to_app;
+my $app = WinPB->to_app;
 
 builder {
     enable 'Auth::QueryString', password => $passwd;
