@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 use utf8;
-use lib './lib';
+use lib '../lib';
 
 use Plack::Builder;
 use Plack::Middleware::Auth::QueryString;
