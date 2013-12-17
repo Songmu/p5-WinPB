@@ -70,7 +70,7 @@ __END__
 
 =head1 NAME
 
-WinPB -
+WinPB - clipboard share api interface in windows
 
 =head1 SYNOPSIS
 
